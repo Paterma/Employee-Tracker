@@ -2,7 +2,7 @@ const mysql = require('mysql2');
 const dotenv = require('dotenv') //to hide password
 const inquirer = require("inquirer");
 const cTable = require("console.table");
-const { brotliDecompress } = require('zlib');
+// const { brotliDecompress } = require('zlib');
 const departmentName = [];
 const roles = [];
 const savedInfo = [];
@@ -12,6 +12,8 @@ const finalInfo = [];
 //need to create helper functions that are getting things out of the database (select all), need to return /the array were given back as the choices array in my inquirer question. The only way to see the list is to get it an return it. 
 //dont return the array dynamically- do it with an empty variable [] const role = [], role array is the choices
 
+
+
 // Connect to database
 const db = mysql.createConnection(
 {
@@ -20,12 +22,14 @@ const db = mysql.createConnection(
     password: 'root',
     database: 'work_info'
 },
+
 console.log(`Connected to the work_info database.`)
 );
 
+
 function begin(){
     initalPrompt()
-};
+}
 
 function initalPrompt (){
 //initial prompt
@@ -71,7 +75,7 @@ inquirer.prompt([
             name: "empManager",
         },
     ]).then(data => {
-        const addedEmp = db.query(`INSERT INTO employee (name) VALUES (${data.firstName}, ${data.lastName}, ${data.empRole}, ${data.empManager};)`)
+    db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (${data.firstName}, ${data.lastName}, ${data.empRole}, ${data.empManager};)`)
     addEmployees()
     })
     if (data.initialQ === "Update Employee role") {
@@ -88,8 +92,7 @@ inquirer.prompt([
         name: "updateRole",
 },
     ]) .then(data => {
-        const updateEmp = db.query(`INSERT INTO e_role (name) VALUES (${data.empUpdate}, ${data.updateRole};)`)
-    updateEmp.push(savedInfo)
+    db.query(`INSERT INTO e_role (name, role_id) VALUES (${data.empUpdate}, ${data.updateRole};)`)
     updateEmployees()
     })
     }
@@ -117,8 +120,7 @@ inquirer.prompt([
         name: "roleDept",
     },
     ]).then(data => {
-        const addRole = db.query(`INSERT INTO e_role (name) VALUES (${data.roleSalary},${data.roleDept},${data.roleName};)`)
-    addRole.push(savedInfo)
+    db.query(`INSERT INTO e_role (title, salary, department_id) VALUES (${data.roleName},${data.roleSalary},${data.roleDept};)`)
     addRole()
     })
 
@@ -126,24 +128,18 @@ inquirer.prompt([
     viewDept()
     }
 
+
     if (data.initialQ === "Add Department") {
         //when ADD DEPARTMENT is selected
 inquirer.prompt([
     {
         type: "input",
-        message: "What is the namr of the department?",
+        message: "What is the name of the department?",
         name: "department",
     },
     
-//  const newDept = () => {
-//      inquirer.prompt(data.newDept)
-//      .then((data) => {
-//          db.query(`INSERT INTO department(name) VALUES (`${data.department};`,)
-//      })
-
 ]).then(data => {
-    const newDept = new newDeptartment (data.department);
-newDept.push(savedInfo)
+db.query(`INSERT INTO department (name) VALUES (${data.department};)`)
     addDept()
     })
 
@@ -155,69 +151,86 @@ newDept.push(savedInfo)
     }
 
 //adding an employee or role you have dependencies, you will need to get all the info out of the database, 
-
 function viewEmployees(){
     db.query('SELECT * FROM employee', function (err, results) {
-        const table = cTable.getTable(results);
-        console.log(table)
+        //const table = cTable.getTable(results);
+        console.table(results)
         });
-}
+    initalPrompt()  
+} 
 function addEmployees(){
     db.query('SELECT * FROM employee', function (err, results) {
-        const table = cTable.getTable(results);
-        console.log(table)
+        // const table = cTable.getTable(results);
+        console.table(results)
         });
+        initalPrompt() 
 }
 function updateEmployees(){
     db.query('SELECT * FROM employee', function (err, results) {
-        const table = cTable.getTable(results);
-        console.log(table)
+        // const table = cTable.getTable(results);
+        console.table(results)
+        for (let i = 0; i < results.length; i++)
+        {roles.push({ name: results[i].empUpdate, value: results[i].updateRole}) 
+}
         });
 }
 function viewRole(){
     db.query('SELECT * FROM e_role', function (err, results) {
-        const table = cTable.getTable(results);
-        console.log(table)
+        // const table = cTable.getTable(results);
+        console.table(results)
         });
 }
 function viewDept(){
     db.query('SELECT * FROM department', function (err, results) {
-        const table = cTable.getTable(results);
-        console.log(table)
+        // const table = cTable.getTable(results);
+        console.table(results)
         });
 }
+        // const viewDept = function () {
+        //     // Query the department's table
+        //     db.query("SELECT * FROM department", function (err, results) {
+        //     console.table(results);
+        //     begin();
+        //     });
+        // };
+        
 function addDept(){
     db.query('SELECT * FROM department', function (err, results) {
-        const table = cTable.getTable(results);
-        console.log(table)
+        // const table = cTable.getTable(results);
+        console.table(results)
         });
 }
 function quit(){
     db.query('SELECT * FROM employee', function (err, results) {
-        const table = cTable.getTable(results);
-        console.log(table)
+        // const table = cTable.getTable(results);
+        console.table(results)
+        // console.log(table)
         });
 } //quit()
 }
 })}
 
-
-//calling the function to go through the questions
 begin()
+//calling the function to go through the questions
+
+
+// db.query(`UPDATE INTO employees SET ? WHERE e_role + employee`,
+// {first_name: data.firstName,
+// last_name: data.lastName,
+// role_id: data.empRole,
+// manager_id: data.empManager,
+// },
+// function (err) {
+//     if(err) throw err;
+//     console.log ("Success")
+// }
+// );
+
 
 //[{name: thing you see, value: id}]
 //for (let i = 0; i < results.length; i++) {
 //roles.push({name: results[i].title, value:results[i].id }) 
 //}
-
-//    .then((data) => {
-//     if (data.init_Choice === "Add a new Department?") {
-//         const department = new Department(data.getId, data.getDepartment_name)
-//         return newDepartment.push(department)
-//     }
-//     console.log(`${data.getDepartment_name} DEPARTMENT HAS BEEN CREATED!`)
-//     console.info(newDepartment, 'line 43');
-// })
 
 // .then(function (answers) {
 //     console.log(answers);
