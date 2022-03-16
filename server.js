@@ -1,7 +1,8 @@
 const mysql = require('mysql2');
 const dotenv = require('dotenv') //to hide password
 const inquirer = require("inquirer");
-const cTable = require("console.table")
+const cTable = require("console.table");
+const { brotliDecompress } = require('zlib');
 const departmentName = [];
 const roles = [];
 const savedInfo = [];
@@ -38,15 +39,12 @@ inquirer.prompt([
 ]).then(data => {
     console.log(data)
 
-        //
         // let person = new savedEmployee (data.initialQ);
         // const firstEmployee = person.getfirstEmp();
     
-
     if (data.initialQ === "View All Employees") {
         viewEmployees()
     }
-
     if (data.initialQ === "Add Employees") {
      //when ADD EMPLOYEE is selected
     inquirer.prompt([
@@ -73,12 +71,9 @@ inquirer.prompt([
             name: "empManager",
         },
     ]).then(data => {
-        let person = new addEmployee1 (data.firstName, data.lastName, data.empRole, data.empManager);
-        const addedEmp = person.getAddedEmp();
-        savedInfo.push(finalInfo)
+        const addedEmp = db.query(`INSERT INTO employee (name) VALUES (${data.firstName}, ${data.lastName}, ${data.empRole}, ${data.empManager};)`)
     addEmployees()
     })
-
     if (data.initialQ === "Update Employee role") {
     //when UPDATE EMPLOYEE ROLE is selected
     inquirer.prompt([
@@ -93,8 +88,7 @@ inquirer.prompt([
         name: "updateRole",
 },
     ]) .then(data => {
-        let person = new updateEmployeeRole (data.empUpdate, data.updateRole);
-        const updateEmp = person.getupdatedEmp();
+        const updateEmp = db.query(`INSERT INTO e_role (name) VALUES (${data.empUpdate}, ${data.updateRole};)`)
     updateEmp.push(savedInfo)
     updateEmployees()
     })
@@ -123,8 +117,7 @@ inquirer.prompt([
         name: "roleDept",
     },
     ]).then(data => {
-        let person = new addRole1 (data.roleName, data.roleSalary, data.roleDept);
-        const addRole = person.getNewRole();
+        const addRole = db.query(`INSERT INTO e_role (name) VALUES (${data.roleSalary},${data.roleDept},${data.roleName};)`)
     addRole.push(savedInfo)
     addRole()
     })
@@ -142,9 +135,14 @@ inquirer.prompt([
         name: "department",
     },
     
+//  const newDept = () => {
+//      inquirer.prompt(data.newDept)
+//      .then((data) => {
+//          db.query(`INSERT INTO department(name) VALUES (`${data.department};`,)
+//      })
+
 ]).then(data => {
-    const person = new newDeptartment (data.department);
-    const newDept = person.getNewDept();
+    const newDept = new newDeptartment (data.department);
 newDept.push(savedInfo)
     addDept()
     })
@@ -234,4 +232,3 @@ begin()
 //       }
 //     );
 //   });
-
