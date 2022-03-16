@@ -1,31 +1,31 @@
-INSERT INTO department (id, name)
+INSERT INTO department ( name)
 VALUES 
-    (1, "Sales"),
-    (2, "Engineering"),
-    (3, "Finance"),
-    (4, "Service"),
-    (5, "Legal");
+    ("Sales"),
+    ("Engineering"),
+    ("Finance"),
+    ("Service"),
+    ("Legal");
 
-INSERT INTO e_role (id, title, salary)
+INSERT INTO e_role (title, salary)
 VALUES 
-    (1, "Sales Lead", 100,000, 1),
-    (2, "Accountant", 120,000, 3),
-    (3, "Software Engineer", 90,000, 2),
-    (4, "Customer Service", 50,000, 4),
-    (5, "Account Manager", 80,000, 1),
-    (6, "Lead Engineer", 110,000, 2),
-    (7, "Lawyer", 200,000, 5),
-    (8, "Salesperson", 60,000, 1),
-    (9, "Legal Team Lead", 160,000, 5);
+    ("Sales Lead", 100000),
+    ("Accountant", 120000),
+    ("Software Engineer", 90000),
+    ("Customer Service", 50000),
+    ("Account Manager", 80000),
+    ("Lead Engineer", 110000),
+    ("Lawyer", 200000),
+    ("Salesperson", 60000),
+    ("Legal Team Lead", 160000);
 
-INSERT INTO employee (id, first_name, last_name)
+INSERT INTO employee (first_name, last_name)
 VALUES 
-    (1, "Ron", "Weasley"),
-    (2, "Harry", "Potter"),
-    (3, "Albus", "Dumbledore"),
-    (4, "Hermione", "Granger"),
-    (5, "Draco", "Malfoy"),
-    (6, "Severus", "Snape"),
-    (7, "Rubeus", "Hagrid");
+    ("Ron", "Weasley"),
+    ("Harry", "Potter"),
+    ("Albus", "Dumbledore"),
+    ("Hermione", "Granger"),
+    ("Draco", "Malfoy"),
+    ("Severus", "Snape"),
+    ("Rubeus", "Hagrid");
 
 -- preexists

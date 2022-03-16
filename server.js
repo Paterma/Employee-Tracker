@@ -119,6 +119,7 @@ inquirer.prompt([
         choices: ["Engineering", "Finance", "Legal", "Sales", "Service"],
         name: "roleDept",
     },
+
     ]).then(data => {
     db.query(`INSERT INTO e_role (title, salary, department_id) VALUES (${data.roleName},${data.roleSalary},${data.roleDept};)`)
     addRole()
@@ -150,7 +151,8 @@ db.query(`INSERT INTO department (name) VALUES (${data.department};)`)
     // quit()
     }
 
-//adding an employee or role you have dependencies, you will need to get all the info out of the database, 
+//adding an employee or role you have dependencies, you will need to get all the info out of the database,
+//creating my functions for each different prompt 
 function viewEmployees(){
     db.query('SELECT * FROM employee', function (err, results) {
         //const table = cTable.getTable(results);
@@ -210,8 +212,10 @@ function quit(){
 }
 })}
 
+
+//calling the function to go through the inital question
 begin()
-//calling the function to go through the questions
+
 
 
 // db.query(`UPDATE INTO employees SET ? WHERE e_role + employee`,
