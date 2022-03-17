@@ -71,7 +71,7 @@ inquirer.prompt([
         {
             type: "list",
             message: "What is the employee's role?",
-            choices: [{name: "Sales Lead", value: 1}, {name: "Salesperson", value: 2}, {name:"Lead Engineer", value:3} ,{name:"Software Engineer", value: 4}, {name: "Account Manager", value: 5}, {name: "Accountant", value: 6} ,{name: "Legal Team Lead", value: 7} ,{name: "Lawyer", value: 8} ,{name: "Customer Service", value: 9}],
+            choices: [{name: "Sales Lead", value: 1}, {name: "Salesperson", value: 2}, {name:"Lead Engineer", value: 3} ,{name:"Software Engineer", value: 4}, {name: "Account Manager", value: 5}, {name: "Accountant", value: 6} ,{name: "Legal Team Lead", value: 7} ,{name: "Lawyer", value: 8} ,{name: "Customer Service", value: 9}],
             name: "empRole",
         },
         {
@@ -93,7 +93,6 @@ inquirer.prompt([
     })
     })
     }
-    
     if (data.initialQ === "Update Employee role") {
     //when UPDATE EMPLOYEE ROLE is selected
     inquirer.prompt([
@@ -181,7 +180,9 @@ db.query(`INSERT INTO department (name) VALUES (?)`, [data.department], function
 })
 
     } else {
-    console.log("Goodbye!")
+        // results.push(finalInfo) //adding the roles to info array
+        // results.join() //stringing together the array of roles
+        // console.log("Goodbye!")
     } 
     // quit()
 
@@ -214,7 +215,7 @@ initialPrompt()
     
 }
 function viewRole(){
-    db.query('SELECT e_role.id, e_role.title, e_role.salary, roles.salary, department.id FROM e_role JOIN department ON e_role.department_id = department.id;', function (err, results) {
+    db.query("SELECT e_role.title, e_role.id, e_role.salary, department.department_id FROM e_role JOIN department ON e_role.department_id = department.department_id;", function (err, results) {
         // const table = cTable.getTable(results);
         console.table(results)
         initialPrompt()
@@ -236,6 +237,14 @@ function addDept(){
         console.table(results)
         initialPrompt()
         });
+}
+function quit(){
+    db.query('SELECT * FROM employee', function (err, results) {
+        // const table = cTable.getTable(results);
+        console.table(results)
+        // console.log(table)
+        });
+ //quit()
 }
 })}
 
