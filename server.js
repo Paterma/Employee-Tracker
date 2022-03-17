@@ -3,10 +3,10 @@ const dotenv = require('dotenv') //to hide password
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 // const { brotliDecompress } = require('zlib');
-const departmentName = [];
-const roles = [];
-const savedInfo = [];
-const finalInfo = [];
+let departmentName = [];
+let roles = [];
+let savedInfo = [];
+let finalInfo = [];
 
 //need to be able to see the role with employee, need to see dept for creating a role. 
 //need to create helper functions that are getting things out of the database (select all), need to return /the array were given back as the choices array in my inquirer question. The only way to see the list is to get it an return it. 
@@ -27,11 +27,19 @@ console.log(`Connected to the work_info database.`)
 );
 
 
-function begin(){
-    initalPrompt()
+function getRoles() {
+    db.query(`SELECT * FROM e_role`, function(err, results) {
+        for (let i = 0; i < results.length; i++)
+    {roles.push({ name: results[i].empUpdate, value: results[i].updateRole}) }
+    })
+    console.log(roles)
 }
 
-function initalPrompt (){
+// function begin(){
+initialPrompt()    
+// }
+
+function initialPrompt (){
 //initial prompt
 inquirer.prompt([
     {
@@ -40,18 +48,16 @@ inquirer.prompt([
         choices: ["View All Employees", "Add Employees", "Update Employee role", "View All Roles", "Add Role", "View All Departments", "Add Department", "Quit"],
         name: "initialQ",
     },
-]).then(data => {
+]). then(data => {
     console.log(data)
 
-        // let person = new savedEmployee (data.initialQ);
-        // const firstEmployee = person.getfirstEmp();
-    
     if (data.initialQ === "View All Employees") {
         viewEmployees()
     }
     if (data.initialQ === "Add Employees") {
+
      //when ADD EMPLOYEE is selected
-    inquirer.prompt([
+   inquirer.prompt([
         {
             type: "input",
             message: "What is the employee's first name?",
@@ -65,37 +71,53 @@ inquirer.prompt([
         {
             type: "list",
             message: "What is the employee's role?",
-            choices: ["Sales Lead", "Salesperson", "Lead Engineer", "Software Engineer", "Account Manager", "Accountant", "Legal Team Lead", "Lawyer", "Customer Service"],
+            choices: [{name: "Sales Lead", value: 1}, {name: "Salesperson", value: 2}, {name:"Lead Engineer", value:3} ,{name:"Software Engineer", value: 4}, {name: "Account Manager", value: 5}, {name: "Accountant", value: 6} ,{name: "Legal Team Lead", value: 7} ,{name: "Lawyer", value: 8} ,{name: "Customer Service", value: 9}],
             name: "empRole",
         },
         {
             type: "list",
             message: "Who is the employee's manager?",
-            choices: ["Johnny Depp", "Channing Tatum", "Kristen Wigg", "Sandra Bullock", "Henry Caville", "Amy Shumer", "Chris Hemsworth", "Ali Wong", "Jo Koy"],
+            choices: [{name: "Ron Weasley", value: 7} , {name: "Harry Potter", value: 1}, {name: "Albus Dumbledore", value: 2}, {name: "Hermione Granger", value: 3}, {name: "Draco Malfoy", value: 4}, {name: "Severus Snape", value: 5}, {name: "Rubeus Hagrid", value: 6}],
             name: "empManager",
         },
+    
     ]).then(data => {
-    db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (${data.firstName}, ${data.lastName}, ${data.empRole}, ${data.empManager};)`)
-    addEmployees()
+    db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.firstName, data.lastName, data.empRole, data.empManager], function(err, res){
+        console.log(data.empRole)
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("success!")
+            addEmployees()
+        }
     })
+    })
+    }
     if (data.initialQ === "Update Employee role") {
     //when UPDATE EMPLOYEE ROLE is selected
     inquirer.prompt([
         { type: "list",
         message: "Which employee's role do you want to update?",
-        choices: ["Ron Weasley", "Harry Potter", "Albus Dumbledore", "Hermione Granger", "Draco Malfoy", "Severus Snape", "Rubeus Hagrid"],
+        choices: [{name: "Ron Weasley", value: 0}, {name: "Harry Potter", value: 1}, {name: "Albus Dumbledore", value: 2}, {name: "Hermione Granger", value: 3}, {name: "Draco Malfoy", value: 4}, {name: "Severus Snape", value: 5}, {name: "Rubeus Hagrid", value: 6}],
         name: "empUpdate",
     },
         { type: "list",
         message: "Which role do you want to assign the selected employee to?",
-        choices: ["Sales Lead", "Salesperson", "Lead Engineer", "Software Engineer", "Account Manager", "Accountant", "Legal Team Lead", "Lawyer", "Customer Service"],
-        name: "updateRole",
+        choices: [{name: "Sales Lead", value: 1}, {name: "Salesperson", value: 2}, {name:"Lead Engineer", value:3} ,{name:"Software Engineer", value: 4}, {name: "Account Manager", value: 5}, {name: "Accountant", value: 6} ,{name: "Legal Team Lead", value: 7} ,{name: "Lawyer", value: 8} ,{name: "Customer Service", value: 9}],
+            name: "updateRole",
 },
-    ]) .then(data => {
-    db.query(`INSERT INTO e_role (name, role_id) VALUES (${data.empUpdate}, ${data.updateRole};)`)
-    updateEmployees()
+    ]) .then(data => { 
+    db.query(`UPDATE employee SET role_id=? WHERE id=?`, [data.updateRole, data.empUpdate], function(err, res){
+        console.log(data.empRole)
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("success!")
+        updateEmployees()
+        }
     })
-    }
+    })
+}
     if (data.initialQ === "View All Roles") {
         viewRole()
     }
@@ -116,19 +138,25 @@ inquirer.prompt([
     {
         type: "list",
         message: "What department does the role belong to?",
-        choices: ["Engineering", "Finance", "Legal", "Sales", "Service"],
+        choices: [{name: "Engineering", value: 1}, {name: "Finance",value:2}, {name: "Legal", value:3}, {name: "Sales", value: 4}, {name: "Service", value: 5}],
         name: "roleDept",
     },
 
     ]).then(data => {
-    db.query(`INSERT INTO e_role (title, salary, department_id) VALUES (${data.roleName},${data.roleSalary},${data.roleDept};)`)
-    addRole()
+        db.query(`INSERT INTO e_role (title, salary, department_id) VALUES (?, ?, ?)`, [data.roleName, data.roleSalary, data.roleDept], function(err, res){ 
+            console.log(data.empRole)
+            if (err) {
+                console.log(err)
+            } else {
+                console.log("success!")
+                addRole()
+            }
+        })
     })
-
+}
     if (data.initialQ === "View All Departments") {
     viewDept()
     }
-
 
     if (data.initialQ === "Add Department") {
         //when ADD DEPARTMENT is selected
@@ -140,16 +168,22 @@ inquirer.prompt([
     },
     
 ]).then(data => {
-db.query(`INSERT INTO department (name) VALUES (${data.department};)`)
-    addDept()
-    })
+db.query(`INSERT INTO department (name) VALUES (?)`, [data.department], function(err, res){
+        console.log(data.department)
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("success!")
+            addDept()
+        }
+})
+})
 
     } else {
         results.push(finalInfo) //adding the roles to info array
         results.join() //stringing together the array of roles
     } 
     // quit()
-    }
 
 //adding an employee or role you have dependencies, you will need to get all the info out of the database,
 //creating my functions for each different prompt 
@@ -157,49 +191,50 @@ function viewEmployees(){
     db.query('SELECT * FROM employee', function (err, results) {
         //const table = cTable.getTable(results);
         console.table(results)
+        initialPrompt() 
         });
-    initalPrompt()  
+    
 } 
 function addEmployees(){
     db.query('SELECT * FROM employee', function (err, results) {
         // const table = cTable.getTable(results);
-        console.table(results)
+        console.table(results) 
+        initialPrompt() 
         });
-        initalPrompt() 
+    
 }
 function updateEmployees(){
     db.query('SELECT * FROM employee', function (err, results) {
         // const table = cTable.getTable(results);
         console.table(results)
-        for (let i = 0; i < results.length; i++)
-        {roles.push({ name: results[i].empUpdate, value: results[i].updateRole}) 
-}
-        });
+        // for (let i = 0; i < results.length; i++)
+        // {roles.push({ name: results[i].empUpdate, value: results[i].updateRole}) 
+initialPrompt()
+    });
+    
 }
 function viewRole(){
     db.query('SELECT * FROM e_role', function (err, results) {
         // const table = cTable.getTable(results);
         console.table(results)
+        initialPrompt()
         });
+        
 }
 function viewDept(){
     db.query('SELECT * FROM department', function (err, results) {
         // const table = cTable.getTable(results);
         console.table(results)
+        initialPrompt()
         });
+    
 }
-        // const viewDept = function () {
-        //     // Query the department's table
-        //     db.query("SELECT * FROM department", function (err, results) {
-        //     console.table(results);
-        //     begin();
-        //     });
-        // };
-        
+
 function addDept(){
     db.query('SELECT * FROM department', function (err, results) {
         // const table = cTable.getTable(results);
         console.table(results)
+        initialPrompt()
         });
 }
 function quit(){
@@ -208,13 +243,13 @@ function quit(){
         console.table(results)
         // console.log(table)
         });
-} //quit()
+ //quit()
 }
 })}
 
 
 //calling the function to go through the inital question
-begin()
+// begin()
 
 
 
