@@ -45,7 +45,7 @@ inquirer.prompt([
     {
         type: "list",
         message: "What would you like to do?",
-        choices: ["View All Employees", "Add Employee", "Update Employee role", "View All Roles", "Add Role", "View All Departments", "Add Department", "Quit"],
+        choices: ["View All Employees", "Add Employees", "Update Employee role", "View All Roles", "Add Role", "View All Departments", "Add Department", "Quit"],
         name: "initialQ",
     },
 ]). then(data => {
@@ -57,13 +57,7 @@ inquirer.prompt([
     if (data.initialQ === "Add Employees") {
 
      //when ADD EMPLOYEE is selected
-inquirer.prompt([
-        {
-            type: "list",
-            message: "What is the employee's role?",
-            choices: [{name: "Sales Lead", value: 1}, {name: "Salesperson", value: 2}, {name:"Lead Engineer", value: 3} ,{name:"Software Engineer", value: 4}, {name: "Account Manager", value: 5}, {name: "Accountant", value: 6} ,{name: "Legal Team Lead", value: 7} ,{name: "Lawyer", value: 8} ,{name: "Customer Service", value: 9}],
-            name: "empRole",
-        },
+   inquirer.prompt([
         {
             type: "input",
             message: "What is the employee's first name?",
@@ -76,13 +70,19 @@ inquirer.prompt([
         },
         {
             type: "list",
+            message: "What is the employee's role?",
+            choices: [{name: "Sales Lead", value: 1}, {name: "Salesperson", value: 2}, {name:"Lead Engineer", value:3} ,{name:"Software Engineer", value: 4}, {name: "Account Manager", value: 5}, {name: "Accountant", value: 6} ,{name: "Legal Team Lead", value: 7} ,{name: "Lawyer", value: 8} ,{name: "Customer Service", value: 9}],
+            name: "empRole",
+        },
+        {
+            type: "list",
             message: "Who is the employee's manager?",
-            choices: [{name: "Ron Weasley", value: 7} , {name: "Harry Potter", value: 1}, {name: "Albus Dumbledore", value: 2}, {name: "Hermione Granger", value: 3}, {name: "Draco Malfoy", value: 4}, {name: "Severus Snape", value: 5}, {name: "Rubeus Hagrid", value: 6}],
+            choices: [{name: "Ron Weasley", value: 7}, {name: "Harry Potter", value: 1}, {name: "Albus Dumbledore", value: 2}, {name: "Hermione Granger", value: 3}, {name: "Draco Malfoy", value: 4}, {name: "Severus Snape", value: 5}, {name: "Rubeus Hagrid", value: 6}],
             name: "empManager",
         },
     
     ]).then(data => {
-    db.query(`INSERT INTO employee (role_id, first_name, last_name, manager_id) VALUES (?, ?, ?, ?)`, [data.empRole,data.firstName, data.lastName, data.empManager], function(err, res){
+    db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.firstName, data.lastName, data.empRole, data.empManager], function(err, res){
         console.log(data.empRole)
         if (err) {
             console.log(err)
@@ -104,7 +104,7 @@ inquirer.prompt([
         { type: "list",
         message: "Which role do you want to assign the selected employee to?",
         choices: [{name: "Sales Lead", value: 1}, {name: "Salesperson", value: 2}, {name:"Lead Engineer", value:3} ,{name:"Software Engineer", value: 4}, {name: "Account Manager", value: 5}, {name: "Accountant", value: 6} ,{name: "Legal Team Lead", value: 7} ,{name: "Lawyer", value: 8} ,{name: "Customer Service", value: 9}],
-            name: "updateRole",
+        name: "updateRole",
 },
     ]) .then(data => { 
     db.query(`UPDATE employee SET role_id=? WHERE id=?`, [data.updateRole, data.empUpdate], function(err, res){
@@ -138,7 +138,7 @@ inquirer.prompt([
     {
         type: "list",
         message: "What department does the role belong to?",
-        choices: [{name: "Engineering", value: 1}, {name: "Finance",value:2}, {name: "Legal", value:3}, {name: "Sales", value: 4}, {name: "Service", value: 5}],
+        choices: [{name: "Engineering", value: 1}, {name: "Finance", value: 2}, {name: "Legal", value:3}, {name: "Sales", value: 4}, {name: "Service", value: 5}],
         name: "roleDept",
     },
 
@@ -201,6 +201,14 @@ function addEmployees(){
         // const table = cTable.getTable(results);
         console.table(results) 
         initialPrompt() 
+        });
+    
+}
+function addRole(){
+    db.query('SELECT * FROM e_role', function (err, results) {
+        // const table = cTable.getTable(results);
+        console.table(results) 
+        addRole()
         });
     
 }
