@@ -51,7 +51,7 @@ I am required to submit BOTH of the following for review:
 
 
 A walkthrough video demonstrating the functionality of the application:
-https://drive.google.com/file/d/1H-bqxAC3x4mKuj6QqgDpU2Gmv3IE4FaE/view
+https://drive.google.com/file/d/19C24z_JZBN-7Wh6Gr-ygy1HJ9-hxu8sE/view
 
 The URL of the GitHub repository, with a unique name and a README describing the project:
 https://github.com/Paterma/Employee-Tracker
