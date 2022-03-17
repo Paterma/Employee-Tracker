@@ -27,14 +27,6 @@ console.log(`Connected to the work_info database.`)
 );
 
 
-function getRoles() {
-    db.query(`SELECT * FROM e_role`, function(err, results) {
-        for (let i = 0; i < results.length; i++)
-    {roles.push({ name: results[i].empUpdate, value: results[i].updateRole}) }
-    })
-    console.log(roles)
-}
-
 // function begin(){
 initialPrompt()    
 // }
@@ -208,7 +200,7 @@ function addRole(){
     db.query('SELECT * FROM e_role', function (err, results) {
         // const table = cTable.getTable(results);
         console.table(results) 
-        addRole()
+        initialPrompt()
         });
     
 }
