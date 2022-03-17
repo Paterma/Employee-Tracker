@@ -18,14 +18,15 @@ VALUES
     (8, "Salesperson", 60000),
     (9, "Legal Team Lead", 160000);
 
-INSERT INTO employee (id, first_name, last_name)
+INSERT INTO employee (id, first_name, last_name, manager_id)
 VALUES 
-    (1, "Ron", "Weasley"),
-    (2, "Harry", "Potter"),
-    (3, "Albus", "Dumbledore"),
-    (4, "Hermione", "Granger"),
-    (5, "Draco", "Malfoy"),
-    (6, "Severus", "Snape"),
-    (7, "Rubeus", "Hagrid");
+    (1, "Ron", "Weasley", 11),
+    (2, "Harry", "Potter", 12),
+    (3, "Albus", "Dumbledore", 13),
+    (4, "Hermione", "Granger", 14),
+    (5, "Draco", "Malfoy", 15),
+    (6, "Severus", "Snape", 16),
+    (7, "Rubeus", "Hagrid", 17);
+
 
 -- preexists
