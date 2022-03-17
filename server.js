@@ -93,6 +93,7 @@ inquirer.prompt([
     })
     })
     }
+    
     if (data.initialQ === "Update Employee role") {
     //when UPDATE EMPLOYEE ROLE is selected
     inquirer.prompt([
@@ -180,8 +181,7 @@ db.query(`INSERT INTO department (name) VALUES (?)`, [data.department], function
 })
 
     } else {
-        results.push(finalInfo) //adding the roles to info array
-        results.join() //stringing together the array of roles
+    console.log("Goodbye!")
     } 
     // quit()
 
@@ -214,7 +214,7 @@ initialPrompt()
     
 }
 function viewRole(){
-    db.query('SELECT * FROM e_role', function (err, results) {
+    db.query('SELECT e_role.id, e_role.title, e_role.salary, roles.salary, department.id FROM e_role JOIN department ON e_role.department_id = department.id;', function (err, results) {
         // const table = cTable.getTable(results);
         console.table(results)
         initialPrompt()
@@ -236,14 +236,6 @@ function addDept(){
         console.table(results)
         initialPrompt()
         });
-}
-function quit(){
-    db.query('SELECT * FROM employee', function (err, results) {
-        // const table = cTable.getTable(results);
-        console.table(results)
-        // console.log(table)
-        });
- //quit()
 }
 })}
 
