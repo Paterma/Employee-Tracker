@@ -98,7 +98,7 @@ inquirer.prompt([
     inquirer.prompt([
         { type: "list",
         message: "Which employee's role do you want to update?",
-        choices: [{name: "Ron Weasley", value: 0}, {name: "Harry Potter", value: 1}, {name: "Albus Dumbledore", value: 2}, {name: "Hermione Granger", value: 3}, {name: "Draco Malfoy", value: 4}, {name: "Severus Snape", value: 5}, {name: "Rubeus Hagrid", value: 6}],
+        choices: [{name: "Ron Weasley", value: 7}, {name: "Harry Potter", value: 1}, {name: "Albus Dumbledore", value: 2}, {name: "Hermione Granger", value: 3}, {name: "Draco Malfoy", value: 4}, {name: "Severus Snape", value: 5}, {name: "Rubeus Hagrid", value: 6}],
         name: "empUpdate",
     },
         { type: "list",
@@ -215,7 +215,8 @@ initialPrompt()
     
 }
 function viewRole(){
-    db.query("SELECT e_role.title, e_role.id, e_role.salary, department.department_id FROM e_role JOIN department ON e_role.department_id = department.department_id;", function (err, results) {
+    db.query('SELECT * FROM e_role', function (err, results) {
+        // db.query("SELECT e_role.title, e_role.id, e_role.salary, department.department_id FROM e_role JOIN department ON e_role.department_id = department.department_id;"
         // const table = cTable.getTable(results);
         console.table(results)
         initialPrompt()
